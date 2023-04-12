@@ -7,11 +7,11 @@
 
 ## Introduction
 
-This library retrieves the properties in vault so that they are loaded when starting Lutèce
+Cette librairie récupère les propriétés dans vault pour qu'elles soient chargées au démarrage de Lutèce
 
 ## Configuration
 
-The properties that must be passed to the library are
+Les propriétés qui doivent etre transmmises à la librairie sont
 ```
 
 ################################################################

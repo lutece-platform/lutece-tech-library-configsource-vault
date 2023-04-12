@@ -43,19 +43,16 @@ public class Configuration
 {
 
     /** The config. */
-    private Config config = ConfigProviderResolver.instance( ).getBuilder( ).addDefaultSources( ).build( );
+    private Config _config = ConfigProviderResolver.instance( ).getBuilder( ).addDefaultSources( ).build( );
 
     /** The vault host. */
-    private String vaultHost = getConfigValue( "configsource.vault.host", "" );
-
-    /** The vault port. */
-    private int vaultPort = Integer.valueOf( getConfigValue( "configsource.vault.port", "8500" ) );
+    private String _vaultAddress = getConfigValue( "configsource.vault.adress", "" );
 
     /** The token. */
-    private String token = getConfigValue( "configsource.vault.token", null );
+    private String _token = getConfigValue( "configsource.vault.token", null );
 
     /** The vault properties path. */
-    private String vaultPropertiesPath = getConfigValue( "configsource.vault.propertiesPath", null );
+    private String _vaultPropertiesPath = getConfigValue( "configsource.vault.propertiesPath", null );
 
     /**
      * Gets the vault properties path.
@@ -64,7 +61,7 @@ public class Configuration
      */
     public String getVaultPropertiesPath( )
     {
-        return vaultPropertiesPath;
+        return _vaultPropertiesPath;
     }
 
     /**
@@ -74,27 +71,17 @@ public class Configuration
      */
     public String getToken( )
     {
-        return token;
+        return _token;
     }
 
     /**
-     * Gets the vault host.
+     * Gets the vault address.
      *
-     * @return the vault host
+     * @return the vault adress
      */
-    public String getVaultHost( )
+    public String getVaultAddress( )
     {
-        return vaultHost;
-    }
-
-    /**
-     * Gets the vauly port.
-     *
-     * @return the vauly port
-     */
-    public int getVaulyPort( )
-    {
-        return vaultPort;
+        return _vaultAddress;
     }
 
     /**
@@ -108,7 +95,7 @@ public class Configuration
      */
     private String getConfigValue( String key, String defaultValue )
     {
-        return config.getOptionalValue( key, String.class ).orElse( defaultValue );
+        return _config.getOptionalValue( key, String.class ).orElse( defaultValue );
     }
 
 }

@@ -47,7 +47,7 @@ public class VaultConfigSource implements ConfigSource
 
     /** The configuration. */
     private Configuration _configuration;
-    
+
     /** The vault properties. */
     private Map<String, String> _vaultProperties = new HashMap<>( );
 
@@ -100,7 +100,8 @@ public class VaultConfigSource implements ConfigSource
     /**
      * Gets the value.
      *
-     * @param strProperty the str property
+     * @param strProperty
+     *            the str property
      * @return the value
      */
     @Override

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>Library Config Source Vault</title>
+    </properties>
+    <body>
+        <section name="Library ConfigSource Vault">
+            <subsection name="Introduction">
+                <p>
+                   Cette librairie récupère les propriétés dans vault pour qu'elles soient chargées au démarrage de Lutèce  
+                </p>
+              </subsection>
+            <subsection name="Configuration">
+                <p>
+                    Les propriétés qui doivent etre transmmises à la librairie sont
+                    <pre>
+################################################################
+##  settings
+
+configsource.vault.adress=http://localhost:8280
+configsource.vault.token=my_token
+configsource.vault.propertiesPath=code_application/code_environement 
+
+                    </pre>
+                </p>
+            </subsection>
+        </section>
+    </body>
+</document>
