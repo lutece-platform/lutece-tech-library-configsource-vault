@@ -46,7 +46,7 @@ public class Configuration
     private Config _config = ConfigProviderResolver.instance( ).getBuilder( ).addDefaultSources( ).build( );
 
     /** The vault host. */
-    private String _vaultAddress = getConfigValue( "configsource.vault.adress", "" );
+    private String _vaultAddress = getConfigValue( "configsource.vault.address", "" );
 
     /** The token. */
     private String _token = getConfigValue( "configsource.vault.token", null );

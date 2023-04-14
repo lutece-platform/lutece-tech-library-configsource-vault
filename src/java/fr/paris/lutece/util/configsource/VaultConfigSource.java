@@ -34,10 +34,13 @@
 package fr.paris.lutece.util.configsource;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
+
+import com.bettercloud.vault.VaultException;
 
 /**
  * The Class VaultConfigSource.
@@ -53,11 +56,25 @@ public class VaultConfigSource implements ConfigSource
 
     /**
      * Instantiates a new vault config source.
+     * @throws VaultException 
      */
-    public VaultConfigSource( )
+    public VaultConfigSource( ) throws VaultException
     {
 
         _configuration = new Configuration( );
+        
+        VaultService vaultService= new VaultService(_configuration.getVaultAddress(), _configuration.getToken());
+        List<String> listKey=vaultService.getAllSecretsKeyByPath(_configuration.getVaultPropertiesPath());
+        
+       if(listKey!=null)
+       {
+    	   for(String strKey:listKey)
+    	   {
+    	         _vaultProperties.put(strKey, vaultService.getSecretValue(_configuration.getVaultPropertiesPath(), strKey));
+    	   }
+       }
+        
+        
 
     }
 
