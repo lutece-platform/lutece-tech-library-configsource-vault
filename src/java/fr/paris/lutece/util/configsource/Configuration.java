@@ -50,6 +50,17 @@ public class Configuration
 
     /** The token. */
     private String _token = getConfigValue( "configsource.vault.token", null );
+    
+    
+    /** The role Id. */
+    private String _roleId = getConfigValue( "configsource.vault.roleId", null );
+    
+    
+ 
+	/** The scret Id. */
+    private String _secretId = getConfigValue( "configsource.vault.secretId", null );
+    
+    
 
     /** The vault properties path. */
     private String _vaultPropertiesPath = getConfigValue( "configsource.vault.propertiesPath", null );
@@ -83,6 +94,15 @@ public class Configuration
     {
         return _vaultAddress;
     }
+    
+    public String getRoleId() {
+  		return _roleId;
+  	}
+
+
+  	public String getSecretId() {
+  		return _secretId;
+  	}
 
     /**
      * Gets the config value.
@@ -97,5 +117,10 @@ public class Configuration
     {
         return _config.getOptionalValue( key, String.class ).orElse( defaultValue );
     }
+    
+    
+ 
+
+ 	
 
 }

@@ -1,10 +1,12 @@
 package fr.paris.lutece.util.configsource;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bettercloud.vault.Vault;
 import com.bettercloud.vault.VaultConfig;
 import com.bettercloud.vault.VaultException;
+import com.bettercloud.vault.response.AuthResponse;
 
 
 
@@ -25,8 +27,16 @@ public class VaultService {
      * @param strVaultToken the str vault token
      * @throws VaultException the vault exception
      */
-    public VaultService(String strAdress, String strVaultToken)throws VaultException {
-          _vault=initDriver(strAdress, strVaultToken);
+    public VaultService(String strAdress, String strVaultToken,String strRoleId,String strSecretId)throws VaultException {
+    	
+    	if(strVaultToken==null)
+    	{
+    	  String strRootToken=getRootToken(strAdress, strRoleId, strSecretId);
+    	  _vault=initDriver(strAdress, strRootToken);
+    	}else
+    	{
+    	  _vault=initDriver(strAdress, strVaultToken);
+    	}
 
     }
 
@@ -67,6 +77,26 @@ public class VaultService {
 
         
     }
+    
+    
+    
+    /**
+ 	 * Gets the all secrets key by path.
+ 	 *
+ 	 * @param strSecretPath the str secret path
+ 	 * @return the all secrets key by path
+ 	 * @throws VaultException the vault exception
+ 	 */
+
+    public Map<String,String> getAllSecretsByPath(String strSecretPath) throws VaultException{
+
+            return _vault.logical()
+                    .read( strSecretPath)
+                    .getData();
+
+   }
+
+    
 
     
     /**
@@ -83,11 +113,32 @@ public class VaultService {
             VaultConfig config = new VaultConfig()
                     .address(strAdress)
                     .token(strRootToken)
+                    .engineVersion(1)
                     .build();
 
             return new Vault(config);
 
   
+    }
+    
+    
+    private String getRootToken(String strAdress,String strRoleId,String strSecretId) throws VaultException
+    {
+    	
+    	
+    	 VaultConfig config = new VaultConfig()
+                 .address(strAdress)
+                 .build();
+    	 
+    	 Vault vault=new Vault(config);
+    	 
+    	final AuthResponse response=  vault.auth().loginByAppRole("approle", strRoleId, strSecretId);
+    	 
+    	 
+    	 
+    	
+    	return response.getAuthClientToken();
+    
     }
 }
 

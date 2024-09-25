@@ -63,17 +63,25 @@ public class VaultConfigSource implements ConfigSource
 
         _configuration = new Configuration( );
         
-        VaultService vaultService= new VaultService(_configuration.getVaultAddress(), _configuration.getToken());
+        VaultService vaultService= new VaultService(_configuration.getVaultAddress(), _configuration.getToken(),_configuration.getRoleId(),_configuration.getSecretId());
+        
+        
+        /**
         List<String> listKey=vaultService.getAllSecretsKeyByPath(_configuration.getVaultPropertiesPath());
         
        if(listKey!=null)
        {
     	   for(String strKey:listKey)
     	   {
+    		     
     	         _vaultProperties.put(strKey, vaultService.getSecretValue(_configuration.getVaultPropertiesPath(), strKey));
     	   }
        }
+       **/
         
+        _vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()));
+        
+
         
 
     }
