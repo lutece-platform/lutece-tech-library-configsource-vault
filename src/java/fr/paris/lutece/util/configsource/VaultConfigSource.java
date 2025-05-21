@@ -34,13 +34,16 @@
 package fr.paris.lutece.util.configsource;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.bettercloud.vault.VaultException;
+
+
 
 /**
  * The Class VaultConfigSource.
@@ -54,36 +57,25 @@ public class VaultConfigSource implements ConfigSource
     /** The vault properties. */
     private Map<String, String> _vaultProperties = new HashMap<>( );
 
+    private static Logger _logger = LogManager.getLogger( VaultConfigSource.class );
+    
     /**
      * Instantiates a new vault config source.
      * @throws VaultException 
      */
     public VaultConfigSource( ) throws VaultException
     {
-
         _configuration = new Configuration( );
         
         VaultService vaultService= new VaultService(_configuration.getVaultAddress(), _configuration.getToken(),_configuration.getRoleId(),_configuration.getSecretId());
         
-        
-        /**
-        List<String> listKey=vaultService.getAllSecretsKeyByPath(_configuration.getVaultPropertiesPath());
-        
-       if(listKey!=null)
-       {
-    	   for(String strKey:listKey)
-    	   {
-    		     
-    	         _vaultProperties.put(strKey, vaultService.getSecretValue(_configuration.getVaultPropertiesPath(), strKey));
-    	   }
-       }
-       **/
-        
         _vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()));
         
-
-        
-
+        _logger.debug( _vaultProperties.size() + " Vault keys found.");
+        for ( String key : _vaultProperties.keySet( ) )
+        {
+    	   _logger.debug( " - found : " + key + " > " +  _vaultProperties.get( key ) );
+        }
     }
 
     /**
