@@ -87,14 +87,20 @@ public class VaultConfigSource implements ConfigSource
                     _vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()+"/"+subPath));
                 } catch (VaultException e) {
                     
-                    _logger.error("vault- errror getting properties for subpath: {}", _configuration.getVaultPropertiesPath()+"/"+subPath)  , e.getMessage(),e);
-                    throw e;
+                    _logger.error("vault- errror getting properties for subpath: {}", _configuration.getVaultPropertiesPath()+"/"+subPath  , e.getMessage(),e);
+                    throw new RuntimeException(e);
                 }
             });
                 
         }
         else
-        {	_vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()));
+        {	
+            try {
+            _vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()));
+            } catch (VaultException e) {
+                _logger.error("vault- errror getting properties for path: {}", _configuration.getVaultPropertiesPath()  , e.getMessage(),e);
+                throw e;
+            }
         }
 
         
