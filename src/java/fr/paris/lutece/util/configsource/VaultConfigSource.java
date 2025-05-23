@@ -34,6 +34,7 @@
 package fr.paris.lutece.util.configsource;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,14 +68,41 @@ public class VaultConfigSource implements ConfigSource
     {
         _configuration = new Configuration( );
         
+        _logger.info("vault- init Config Source");
+        _logger.info("vault- Address : {} ",_configuration.getVaultAddress( ) );
+        _logger.info("vault- Token : {}" ,_configuration.getToken( )!="null"? "xxxxxxxx" : "empty");
+        _logger.info("vault- Role Id :{}  " , _configuration.getRoleId( )!="null"? "xxxxxxxx" : "empty");
+        _logger.info("vault- Secret Id :{} " ,  _configuration.getSecretId( )!="null"? "xxxxxxxx" : "empty");
+        _logger.info("vault- Properties Path : {}" , _configuration.getVaultPropertiesPath( ) );
+        
         VaultService vaultService= new VaultService(_configuration.getVaultAddress(), _configuration.getToken(),_configuration.getRoleId(),_configuration.getSecretId());
+         
+        List<String> listSubPath=vaultService.getSecretsSubPath(_configuration.getVaultPropertiesPath( ));
+        if(listSubPath!=null && listSubPath.size()>0)
+        {
+          	               
+            listSubPath.forEach( subPath -> {
+                try {
+                    _logger.info("vault- Subpath found : {}" , _configuration.getVaultPropertiesPath()+"/"+subPath); 
+                    _vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()+"/"+subPath));
+                } catch (VaultException e) {
+                    
+                    _logger.error("vault- errror getting properties for subpath: {}", _configuration.getVaultPropertiesPath()+"/"+subPath)  , e.getMessage(),e);
+                    throw e;
+                }
+            });
+                
+        }
+        else
+        {	_vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()));
+        }
+
         
-        _vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()));
         
-        _logger.debug( _vaultProperties.size() + " Vault keys found.");
+        _logger.info( "vault- number of vault keys found {} ",_vaultProperties.size());
         for ( String key : _vaultProperties.keySet( ) )
         {
-    	   _logger.debug( " - found : " + key + " > " +  _vaultProperties.get( key ) );
+    	   _logger.debug( " vault- found  keys: {}", key  );
         }
     }
 

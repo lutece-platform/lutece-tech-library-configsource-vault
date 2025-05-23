@@ -9,8 +9,6 @@ import com.bettercloud.vault.VaultException;
 import com.bettercloud.vault.response.AuthResponse;
 
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class VaultService.
  */
@@ -42,18 +40,17 @@ public class VaultService {
 
     
 	 /**
- 	 * Gets the all secrets key by path.
+ 	 * Gets the listy of secrets sub path.
  	 *
  	 * @param strSecretPath the str secret path
  	 * @return the all secrets key by path
  	 * @throws VaultException the vault exception
  	 */
 
-    public List<String> getAllSecretsKeyByPath(String strSecretPath) throws VaultException{
+    public List<String> getSecretsSubPath(String strSecretPath) throws VaultException{
 
-            List<String> listAllSecrets = _vault.logical()
+            return _vault.logical()
                     .list(strSecretPath).getListData();
-            return listAllSecrets;
 
    }
 
@@ -77,6 +74,9 @@ public class VaultService {
 
         
     }
+
+
+    
     
     
     
@@ -89,7 +89,7 @@ public class VaultService {
  	 */
 
     public Map<String,String> getAllSecretsByPath(String strSecretPath) throws VaultException{
-
+      
             return _vault.logical()
                     .read( strSecretPath)
                     .getData();
@@ -109,7 +109,6 @@ public class VaultService {
      */
     private  Vault initDriver(String strAdress, String strRootToken) throws VaultException {
 
-    
             VaultConfig config = new VaultConfig()
                     .address(strAdress)
                     .token(strRootToken)
