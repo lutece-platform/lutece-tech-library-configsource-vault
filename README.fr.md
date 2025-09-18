@@ -7,21 +7,39 @@
 
 ## Introduction
 
-Cette librairie récupère les propriétés dans vault pour qu'elles soient chargées au démarrage de Lutèce
+Cette librairie récupère les propriétés dans vault pour qu'elles soient chargées au démarrage de Lutèce. Par la suite, elles sont accessibles via ce service de configuration Lutèce.La configuration de la librairie peut etre transmise via les variables d'environnement, les variables système ou un fichier de properties
 
 ## Configuration
 
-Les propriétés qui doivent etre transmmises à la librairie sont
+Les propriétés de configuration sont les suivantes :
 ```
 
 ################################################################
 ##  settings
 
-configsource.vault.adress=http://localhost:8280
+#  adresse de vault
+configsource.vault.address=http://localhost:8280
+#  vault token pour accéder à vault s'il est nul, il utilisera roleId et secretId
 configsource.vault.token=my_token
-configsource.vault.propertiesPath=code_application/code_environement 
+#  role id de vault
+configsource.vault.roleId"=my_role_id
+#  secret id de vault
+configsource.vault.secretId=my_secret_id
+#  chemin vers les propriétés dans vault
+configsource.vault.propertiesPath=code_application/code_environement
+
 
                     
+```
+si vous utilisez des variables d'environnement, remplacez les points par des underscores et utilisez des lettres majuscules, par exemple :
+```
+
+configsource.vault.address --> CONFIGSOURCE_VAULT_ADDRESS 
+configsource.vault.token --> CONFIGSOURCE_VAULT_TOKEN 
+configsource.vault.roleId --> CONFIGSOURCE_VAULT_ROLEID 
+configsource.vault.secretId --> CONFIGSOURCE_VAULT_SECRETID 
+configsource.vault.propertiesPath --> CONFIGSOURCE_VAULT_PROPERTIESPATH 
+
 ```
 
 

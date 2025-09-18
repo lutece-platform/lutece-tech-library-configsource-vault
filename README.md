@@ -7,21 +7,38 @@
 
 ## Introduction
 
-This library retrieves the properties in vault so that they are loaded when starting Lutèce
+This library retrieves properties from Vault so that they are loaded at Lutece startup. Afterwards, they are accessible via this Lutèce configuration service.The library configuration can be provided via environment variables, system variables, or a properties file.
 
 ## Configuration
 
-The properties that must be passed to the library are
+The configuration properties are as follows:
 ```
 
 ################################################################
 ##  settings
 
-configsource.vault.adress=http://localhost:8280
+#  Vault address
+configsource.vault.address=http://localhost:8280
+#  Vault token to access Vault. If null, it will use roleId and secretId
 configsource.vault.token=my_token
-configsource.vault.propertiesPath=code_application/code_environement 
+#  Vault role id
+configsource.vault.roleId=my_role_id
+#  Vault secret id
+configsource.vault.secretId=my_secret_id
+#  Path to properties in Vault
+configsource.vault.propertiesPath=application_code/environment_code
 
                     
+```
+if you use environment variables, replace dots by underscores and use uppercase letters, for example :
+```
+
+configsource.vault.address --> CONFIGSOURCE_VAULT_ADDRESS 
+configsource.vault.token --> CONFIGSOURCE_VAULT_TOKEN 
+configsource.vault.roleId --> CONFIGSOURCE_VAULT_ROLEID 
+configsource.vault.secretId --> CONFIGSOURCE_VAULT_SECRETID 
+configsource.vault.propertiesPath --> CONFIGSOURCE_VAULT_PROPERTIESPATH 
+
 ```
 
 
