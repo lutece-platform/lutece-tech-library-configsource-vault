@@ -38,11 +38,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.bettercloud.vault.VaultException;
+
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 
 
@@ -58,22 +58,20 @@ public class VaultConfigSource implements ConfigSource
     /** The vault properties. */
     private Map<String, String> _vaultProperties = new HashMap<>( );
 
-    private static Logger _logger = LogManager.getLogger( VaultConfigSource.class );
-    
     /**
      * Instantiates a new vault config source.
-     * @throws VaultException 
+     * @throws VaultException
      */
     public VaultConfigSource( )
     {
         _configuration = new Configuration( );
-        
-        _logger.info("vault- init Config Source");
-        _logger.info("vault- Address : {} ",_configuration.getVaultAddress( ) );
-        _logger.info("vault- Token : {}" ,_configuration.getToken( )!="null"? "xxxxxxxx" : "empty");
-        _logger.info("vault- Role Id :{}  " , _configuration.getRoleId( )!="null"? "xxxxxxxx" : "empty");
-        _logger.info("vault- Secret Id :{} " ,  _configuration.getSecretId( )!="null"? "xxxxxxxx" : "empty");
-        _logger.info("vault- Properties Path : {}" , _configuration.getVaultPropertiesPath( ) );
+
+        AppLogService.info("vault- init Config Source");
+        AppLogService.info("vault- Address : {} ",_configuration.getVaultAddress( ) );
+        AppLogService.info("vault- Token : {}" ,_configuration.getToken( )!="null"? "xxxxxxxx" : "empty");
+        AppLogService.info("vault- Role Id :{}  " , _configuration.getRoleId( )!="null"? "xxxxxxxx" : "empty");
+        AppLogService.info("vault- Secret Id :{} " ,  _configuration.getSecretId( )!="null"? "xxxxxxxx" : "empty");
+        AppLogService.info("vault- Properties Path : {}" , _configuration.getVaultPropertiesPath( ) );
         
         VaultService vaultService;
 		try {
@@ -87,11 +85,11 @@ public class VaultConfigSource implements ConfigSource
 	          	               
 	            listSubPath.forEach( subPath -> {
 	                try {
-	                    _logger.info("vault- Subpath found : {}" , _configuration.getVaultPropertiesPath()+"/"+subPath); 
+	                    AppLogService.info("vault- Subpath found : {}" , _configuration.getVaultPropertiesPath()+"/"+subPath);
 	                    _vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()+"/"+subPath));
 	                } catch (VaultException e) {
-	                    
-	                    _logger.error("vault- errror getting properties for subpath: {}", _configuration.getVaultPropertiesPath()+"/"+subPath  , e.getMessage(),e);
+
+	                    AppLogService.error("vault- errror getting properties for subpath: {}", _configuration.getVaultPropertiesPath()+"/"+subPath, e);
 	                    throw new RuntimeException(e);
 	                }
 	            });
@@ -102,20 +100,20 @@ public class VaultConfigSource implements ConfigSource
 	            try {
 	            _vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()));
 	            } catch (VaultException e) {
-	                _logger.error("vault- errror getting properties for path: {}", _configuration.getVaultPropertiesPath()  , e.getMessage(),e);
+	                AppLogService.error("vault- errror getting properties for path: {}", _configuration.getVaultPropertiesPath(), e);
 	                throw e;
 	            }
 	        }
 	
 	        
 	        
-	        _logger.info( "vault- number of vault keys found {} ",_vaultProperties.size());
+	        AppLogService.info( "vault- number of vault keys found {} ",_vaultProperties.size());
 	        for ( String key : _vaultProperties.keySet( ) )
 	        {
-	    	   _logger.debug( " vault- found  keys: {}", key  );
+	    	   AppLogService.debug( " vault- found  keys: {}", key  );
 	        }
 		} catch (VaultException e) {
-			_logger.error("Failed to initialize HashiCorp Vault Config Source. It will be ignored. Error details: ", e);		}
+			AppLogService.error("Failed to initialize HashiCorp Vault Config Source. It will be ignored. Error details: ", e);		}
     }
 
     /**
