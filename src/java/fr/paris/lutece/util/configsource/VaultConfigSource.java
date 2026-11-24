@@ -68,11 +68,18 @@ public class VaultConfigSource implements ConfigSource
 
         AppLogService.info("vault- init Config Source");
         AppLogService.info("vault- Address : {} ",_configuration.getVaultAddress( ) );
-        AppLogService.info("vault- Token : {}" ,_configuration.getToken( )!="null"? "xxxxxxxx" : "empty");
-        AppLogService.info("vault- Role Id :{}  " , _configuration.getRoleId( )!="null"? "xxxxxxxx" : "empty");
-        AppLogService.info("vault- Secret Id :{} " ,  _configuration.getSecretId( )!="null"? "xxxxxxxx" : "empty");
-        AppLogService.info("vault- Properties Path : {}" , _configuration.getVaultPropertiesPath( ) );
-        
+        AppLogService.info( "vault- Token : {}", mask( _configuration.getToken( ) ) );
+        AppLogService.info( "vault- Role Id : {}", mask( _configuration.getRoleId( ) ) );
+        AppLogService.info( "vault- Secret Id : {}", mask( _configuration.getSecretId( ) ) );
+        AppLogService.info( "vault- Properties Path : {}", _configuration.getVaultPropertiesPath( ) );
+
+        // no address: Vault is not used, no login is attempted
+        if ( !isConfigured( _configuration.getVaultAddress( ) ) )
+        {
+            AppLogService.info( "vault- no address configured, the Vault config source is not used" );
+            return;
+        }
+
         VaultService vaultService;
 		try {
 			vaultService = new VaultService(_configuration.getVaultAddress(), _configuration.getToken(),_configuration.getRoleId(),_configuration.getSecretId());
@@ -113,6 +120,30 @@ public class VaultConfigSource implements ConfigSource
 	        }
 		} catch (VaultException e) {
 			AppLogService.error("Failed to initialize HashiCorp Vault Config Source. It will be ignored. Error details: ", e);		}
+    }
+
+    /**
+     * Gives the value to log for a credential: never the credential itself
+     *
+     * @param strValue
+     *            the credential
+     * @return "xxxxxxxx" when the credential is set, "empty" otherwise
+     */
+    static String mask( String strValue )
+    {
+        return ( strValue == null || strValue.isEmpty( ) ) ? "empty" : "xxxxxxxx";
+    }
+
+    /**
+     * Tells whether Vault is configured
+     *
+     * @param strAddress
+     *            the address of Vault
+     * @return true if an address is configured
+     */
+    static boolean isConfigured( String strAddress )
+    {
+        return strAddress != null && !strAddress.trim( ).isEmpty( );
     }
 
     /**
