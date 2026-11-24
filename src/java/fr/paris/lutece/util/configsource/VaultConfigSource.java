@@ -88,9 +88,8 @@ public class VaultConfigSource implements ConfigSource
 	                    AppLogService.info("vault- Subpath found : {}" , _configuration.getVaultPropertiesPath()+"/"+subPath);
 	                    _vaultProperties.putAll(vaultService.getAllSecretsByPath(_configuration.getVaultPropertiesPath()+"/"+subPath));
 	                } catch (VaultException e) {
-
-	                    AppLogService.error("vault- errror getting properties for subpath: {}", _configuration.getVaultPropertiesPath()+"/"+subPath, e);
-	                    throw new RuntimeException(e);
+	                    // ignored like the other Vault errors: an exception out of a config source stops the start of the application
+	                    AppLogService.error("vault- errror getting properties for subpath: {}, it will be ignored", _configuration.getVaultPropertiesPath()+"/"+subPath, e);
 	                }
 	            });
 	                

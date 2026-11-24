@@ -7,6 +7,7 @@ import com.bettercloud.vault.Vault;
 import com.bettercloud.vault.VaultConfig;
 import com.bettercloud.vault.VaultException;
 import com.bettercloud.vault.response.AuthResponse;
+import com.bettercloud.vault.response.LogicalResponse;
 
 
 /**
@@ -49,8 +50,9 @@ public class VaultService {
 
     public List<String> getSecretsSubPath(String strSecretPath) throws VaultException{
 
-            return _vault.logical()
-                    .list(strSecretPath).getListData();
+            LogicalResponse response = _vault.logical( ).list( strSecretPath );
+            checkStatus( response, strSecretPath );
+            return response.getListData( );
 
    }
 
@@ -90,9 +92,9 @@ public class VaultService {
 
     public Map<String,String> getAllSecretsByPath(String strSecretPath) throws VaultException{
       
-            return _vault.logical()
-                    .read( strSecretPath)
-                    .getData();
+            LogicalResponse response = _vault.logical( ).read( strSecretPath );
+            checkStatus( response, strSecretPath );
+            return response.getData( );
 
    }
 
@@ -139,7 +141,21 @@ public class VaultService {
     	return response.getAuthClientToken();
     
     }
+
+    /**
+     * The driver does not throw on the 4xx answers of Vault: a refusal (bad token, missing policy) is an error, not an empty secret.
+     * A path that does not exist (404) gives no secret.
+     *
+     * @param response the response of Vault
+     * @param strSecretPath the path read
+     * @throws VaultException if Vault answered an error other than 404
+     */
+    private static void checkStatus( LogicalResponse response, String strSecretPath ) throws VaultException
+    {
+        int nStatus = response.getRestResponse( ).getStatus( );
+        if ( nStatus >= 400 && nStatus != 404 )
+        {
+            throw new VaultException( "Vault responded with HTTP status code: " + nStatus + " for the path " + strSecretPath, nStatus );
+        }
+    }
 }
-
-
-
